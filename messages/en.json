@@ -135,6 +135,7 @@
   "settings_version_checking": "checking…",
   "settings_version_failed": "check failed",
   "settings_version_current": "up to date",
+  "settings_version_managed": "updated by your package manager",
   "settings_check_updates": "Check for updates",
 
   "settings_report": "Bug report file",

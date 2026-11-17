@@ -57,6 +57,8 @@ When a new version is out, a banner appears at the top of the window.
 - **Windows, macOS and the AppImage:** press **Update**, then **Restart** if the app asks.
 - **AUR:** update `pob-redux-bin` with your AUR helper, for example `yay -Syu`.
 - **.deb and .rpm:** press **Download** and install the new package.
+- **Packagers:** set `POB_REDUX_DISABLE_UPDATES=1` in the app's environment when your package manager
+  updates it, as Nix or Flatpak do. The app then never checks for updates and shows no banner.
 
 To check by hand, open Settings (the gear in the title bar, or Ctrl+,) and press **Check for updates**.
 

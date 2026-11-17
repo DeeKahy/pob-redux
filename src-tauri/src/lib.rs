@@ -366,9 +366,13 @@ fn open_on_start() -> Option<String> {
 
 /// How this copy gets updates. The updater replaces the running binary, which on
 /// Linux only works for an AppImage. An AUR install updates through pacman, and
-/// a .deb or .rpm install has to fetch the new package.
+/// a .deb or .rpm install has to fetch the new package. Packagers whose package
+/// manager handles updates (Nix, Flatpak, ...) set POB_REDUX_DISABLE_UPDATES=1.
 #[tauri::command]
 fn update_method() -> &'static str {
+    if std::env::var_os("POB_REDUX_DISABLE_UPDATES").is_some_and(|v| !v.is_empty() && v != "0") {
+        return "managed";
+    }
     if !cfg!(target_os = "linux") || std::env::var_os("APPIMAGE").is_some() {
         return "self";
     }

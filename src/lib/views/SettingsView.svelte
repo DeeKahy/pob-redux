@@ -615,7 +615,9 @@
               <span class="hint">{m.settings_version_hint()}</span>
             </span>
             <div class="row">
-              {#if appUpdate.phase === "available"}
+              {#if appUpdate.method === "managed"}
+                <span class="dim">{m.settings_version_managed()}</span>
+              {:else if appUpdate.phase === "available"}
                 <span>{m.update_available()} <span class="mono" style:color="var(--ok)">{appUpdate.version}</span> {m.update_available_suffix()}</span>
                 {#if appUpdate.method === "self"}
                   <button class="btn sm" onclick={() => appUpdate.install()}>{m.update_install()}</button>

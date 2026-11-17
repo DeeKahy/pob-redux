@@ -7,8 +7,8 @@ const KEY = "pob-redux:update";
 const DOWNLOAD_URL = "https://pobredux.com/#download";
 
 export type UpdatePhase = "idle" | "checking" | "available" | "downloading" | "ready" | "error";
-/** `self`: the app installs the update. `aur`: pacman does. `package`: a .deb or .rpm the user downloads. */
-export type UpdateMethod = "self" | "aur" | "package";
+/** `self`: the app installs the update. `aur`: pacman does. `package`: a .deb or .rpm the user downloads. `managed`: the packager turned update checks off. */
+export type UpdateMethod = "self" | "aur" | "package" | "managed";
 
 /**
  * App auto-update. Checks once shortly after boot, then only when asked.
@@ -45,9 +45,11 @@ class UpdateStore {
     } catch {}
     invoke<UpdateMethod>("update_method")
       .then((v) => (this.method = v))
-      .catch(() => {});
-    // Let the engine finish booting before touching the network.
-    setTimeout(() => void this.check(false), 4000);
+      .catch(() => {})
+      .finally(() => {
+        // Let the engine finish booting before touching the network.
+        if (this.method !== "managed") setTimeout(() => void this.check(false), 4000);
+      });
   }
 
   dismiss() {
@@ -63,7 +65,7 @@ class UpdateStore {
 
   /** `manual` surfaces "you are up to date" and any error; the boot check is silent. */
   async check(manual = true) {
-    if (this.phase === "downloading" || this.phase === "checking") return;
+    if (this.method === "managed" || this.phase === "downloading" || this.phase === "checking") return;
     this.phase = "checking";
     this.error = null;
     try {
